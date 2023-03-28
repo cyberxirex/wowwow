@@ -7,7 +7,7 @@ node {
   }
   stage('========== Build image ==========') {
     app = docker.build("stepanowon/nodeapp-git")
-    echo "VERSION : $VERSION"
+    echo "VERSION : ${VERSION}"
   }
   stage('========== Push image ==========') {
     docker.withRegistry('https://registry.hub.docker.com/stepanowon/nodeapp-git', 'dockerhub_credentials') {
