@@ -4,11 +4,11 @@ node {
      checkout scm
    }
    stage('========== Build image ==========') {
-     app = docker.build("stepanowon/nodeapp-git")
+     app = docker.build("${env.REPOSITORY}")
    }
    stage('========== Push image ==========') {
-      withEnv(["IMAGE_VERSION=1.0.0", "REPOSITORY=stepanowon/nodeapp-git"]) {
-         docker.withRegistry('https://registry.hub.docker.com/${env.REPOSITORY}', 'dockerhub_credentials') {
+      withEnv(["IMAGE_VERSION=1.0.0"]) {
+         docker.withRegistry("https://registry.hub.docker.com/${env.REPOSITORY}", "dockerhub_credentials") {
             app.push("${env.IMAGE_VERSION}")
             app.push("latest")
          }
