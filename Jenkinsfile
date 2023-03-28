@@ -7,7 +7,7 @@ node {
      app = docker.build("${env.IMAGE_REPO}")
    }
    stage('========== Push image ==========') {
-      withEnv(["IMAGE_VERSION=1.0.1"]) {
+      withEnv(["IMAGE_VERSION=1.0.0"]) {
          docker.withRegistry("https://registry.hub.docker.com/${env.IMAGE_REPO}", "dockerhub_credentials") {
             app.push("${env.IMAGE_VERSION}")
             app.push("latest")
