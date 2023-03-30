@@ -10,8 +10,10 @@ pipeline {
         stage('Docker Build') {
             agent any
             steps {
-                echo "${env.IMAGE_REPO}:${IMAGE_VERSION}"
-                app = docker.build("${env.IMAGE_REPO}")
+                script {
+                    echo "${env.IMAGE_REPO}:${IMAGE_VERSION}"
+                    app = docker.build("${env.IMAGE_REPO}")
+                }
             }
         }
     }
