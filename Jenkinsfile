@@ -1,7 +1,7 @@
 def IMAGE_VERSION = '1.0.0'
 pipeline {
-    agent none
-    stages {
+	agent any
+	stages {
   		stage("Checkout") {
 			steps {
 				checkout scm
