@@ -19,9 +19,11 @@ pipeline {
         stage('###Push Image') {
             agent any
             steps {
-                docker.withRegistry("https://registry.hub.docker.com/${env.IMAGE_REPO}", "dockerhub_credentials") {            
-                    app.push(IMAGE_VERSION)
-                    app.push("latest")
+                script {
+                    docker.withRegistry("https://registry.hub.docker.com/${env.IMAGE_REPO}", "dockerhub_credentials") {            
+                        app.push(IMAGE_VERSION)
+                        app.push("latest")
+                    }
                 }
             }
         }
