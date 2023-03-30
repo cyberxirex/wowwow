@@ -10,14 +10,8 @@ pipeline {
         stage('Docker Build') {
             agent any
             steps {
-                sh 'echo ${env.IMAGE_REPO}:${IMAGE_VERSION}'
-      	        sh 'docker build . --tag ${env.IMAGE_REPO}:latest'
-            }
-        }
-        stage('Docker Tagging') {
-            agent any 
-            steps {
-                sh 'docker tag ${env.IMAGE_REPO}:latest ${env.IMAGE_REPO}:${IMAGE_VERSION}'
+                echo "${env.IMAGE_REPO}:${IMAGE_VERSION}"
+                app = docker.build("${env.IMAGE_REPO}")
             }
         }
     }
