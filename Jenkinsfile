@@ -2,11 +2,11 @@ def IMAGE_VERSION = '1.0.0'
 pipeline {
 	agent any
 	stages {
-  		stage("Checkout") {
-			steps {
-				checkout scm
-			}
-		}
+        stage("Checkout") {
+            steps {
+                checkout scm
+            }
+        }
         stage('Docker Build') {
             agent any
             steps {
