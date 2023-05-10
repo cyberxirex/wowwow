@@ -6,7 +6,7 @@ const os = require('os');
 const PORT = 80;
 const HOST = '0.0.0.0';
 
-// 
+// 주석 추가
 const app = express();
 app.get('/', (req, res) => {
   return res.status(200).send(`
