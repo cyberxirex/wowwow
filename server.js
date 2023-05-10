@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
   return res.status(200).send(`
   <div>
     <h2> Version : 2.0.0 </h2>
-    <h2> 호스트명 : ${os.hostname()} </h2>
+    <h2> 호스트명 :: ${os.hostname()} </h2>
   </div>
   `);
 });
