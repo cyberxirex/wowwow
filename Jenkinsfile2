@@ -1,0 +1,33 @@
+def IMAGE_VERSION = '1.0.0'
+def IMAGE_REGISTRY = '242337484181.dkr.ecr.ap-northeast-2.amazonaws.com'
+def IMAGE_REPO = '/nodeapp000'
+pipeline {
+	agent any
+	stages {
+        stage("Checkout") {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Docker Build') {
+            agent any
+            steps {
+                script {
+                    echo "${env.IMAGE_REGISTRY}${env.IMAGE_REPO}:${IMAGE_VERSION}"
+                    app = docker.build("${env.IMAGE_REGISTRY}${env.IMAGE_REPO}")
+                }
+            }
+        }
+        stage('Push Image') {
+            agent any
+            steps {
+                script {
+                    docker.withRegistry("https://${IMAGE_REGISTRY}", 'ecr:ap-northeast-2:AWSKEY') {            
+                        app.push(IMAGE_VERSION)
+                        app.push("latest")
+                    }
+                }
+            }
+        }
+    }
+}
