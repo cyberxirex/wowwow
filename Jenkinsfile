@@ -20,7 +20,7 @@ pipeline {
             agent any
             steps {
                 script {
-                    docker.withRegistry("https://registry.hub.docker.com/${env.IMAGE_REPO}", "dockerhub-credentials") {            
+                    docker.withRegistry("https://registry.hub.docker.com/${env.IMAGE_REPO}", "dockerhub-cred") {            
                         app.push(IMAGE_VERSION)
                         app.push("latest")
                     }
