@@ -1,4 +1,4 @@
-def IMAGE_VERSION = '1.0.0'
+def IMAGE_VERSION
 def ECR_REGISTRY = "242337484181.dkr.ecr.ap-northeast-2.amazonaws.com"
 def ECR_REPO = "${ECR_REGISTRY}/nodeapp00"
 
@@ -14,6 +14,7 @@ pipeline {
             agent any
             steps {
                 script {
+                    IMAGE_VERSION = sh(script: "head -n 1 Dockerfile | sed 's/#//'", returnStdout: true).trim()
                     echo "${env.IMAGE_REPO}:${IMAGE_VERSION}"
                     app1 = docker.build("${env.IMAGE_REPO}")
                     echo "${ECR_REPO}:${IMAGE_VERSION}"
