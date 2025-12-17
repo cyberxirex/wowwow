@@ -1,43 +1,44 @@
 def IMAGE_VERSION
-pipeline { 
-  agent any 
-  environment { 
-    DOCKER_CRED = credentials('dockerhub-cred')  // jenkins에 등록해 놓은 자격증명 ID
-  }
-  stages { 
-    stage("Checkout") {
-      steps {
-        checkout scm
-      }
-    }
-    stage('Docker Build') {
-      steps {
-        script {
-          IMAGE_VERSION = sh(script: "head -n 1 Dockerfile | sed 's/#//'", 
-              returnStdout: true).trim()
-          echo "${env.IMAGE_REPO}:${IMAGE_VERSION}"
-          sh "docker build . -t ${env.IMAGE_REPO}:${IMAGE_VERSION}"
-          sh "docker tag ${env.IMAGE_REPO}:${IMAGE_VERSION} ${env.IMAGE_REPO}:latest"
+def ECR_REGISTRY = "242337484181.dkr.ecr.ap-northeast-2.amazonaws.com"
+def ECR_REPO = "${ECR_REGISTRY}/nodeapp06"
+
+pipeline {
+	agent any
+	stages {
+        stage("Checkout") {
+            steps {
+                checkout scm
+            }
         }
-      }
+        stage('Docker Build') {
+            agent any
+            steps {
+                script {
+					IMAGE_VERSION = sh(script: "head -n 1 Dockerfile | sed 's/#//'", returnStdout: true).trim()
+                    echo "${env.IMAGE_REPO}:${IMAGE_VERSION}"
+                    app1 = docker.build("${env.IMAGE_REPO}")
+                    echo "${ECR_REPO}:${IMAGE_VERSION}"
+                    app2 = docker.build("${ECR_REPO}")
+                }
+            }
+        }
+        stage('Push Image') {
+            agent any
+            steps {
+                script {
+                    echo "push docker hub"
+                    docker.withRegistry("https://registry.hub.docker.com/${env.IMAGE_REPO}", "dockerhub-cred") {            
+                        app1.push(IMAGE_VERSION)
+                        app1.push("latest")
+                    }
+                    echo "push ecr"
+                    docker.withRegistry("https://${ECR_REGISTRY}", 'ecr:ap-northeast-2:aws-cred') {            
+                        app2.push(IMAGE_VERSION)
+                        app2.push("latest")
+                    }
+                }
+            }
+        }
     }
-    stage('Docker Login'){
-      steps {
-        sh "echo $DOCKER_CRED_PSW | docker login -u $DOCKER_CRED_USR --password-stdin"
-      }
-    }
-    stage('Push images') { 
-      steps { 
-        script {
-          sh "docker push ${env.IMAGE_REPO}:${IMAGE_VERSION}"
-          sh "docker push ${env.IMAGE_REPO}:latest"
-        } 
-      }
-    } 
-    stage('Remove Images') { 
-      steps { 
-        sh "docker rmi ${env.IMAGE_REPO}:${IMAGE_VERSION}"
-      }
-    } 
-  }
 }
+
